@@ -14,6 +14,10 @@ const user_schema = new Schema({
     type: String,
     default: null,
   },
+  status: {
+    type: String,
+    default: 'offline',
+  },
 });
 
 const USER_MODEL = model("chat_user", user_schema);

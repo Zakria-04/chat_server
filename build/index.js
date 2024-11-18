@@ -37,7 +37,7 @@ app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 app.use("/", Routes_1.default);
 const dbURL = process.env.DB_URL;
-//* error handling if the data base url is missing or wrong inside the .env file
+//* error handling if the data base url is missing or wrong var name inside the .env file
 //TODO => if you find this error you need to create .env file and add your mongoDB url inside DB_URL variable
 if (!dbURL) {
     throw new Error("Missing DB_URL environment variable");

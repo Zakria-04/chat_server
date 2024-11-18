@@ -15,6 +15,10 @@ const user_schema = new mongoose_1.Schema({
         type: String,
         default: null,
     },
+    status: {
+        type: String,
+        default: 'offline',
+    },
 });
 const USER_MODEL = (0, mongoose_1.model)("chat_user", user_schema);
 exports.default = USER_MODEL;

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import USER_MODEL from "../Models/user.model";
+import findUserByID from "../../res/utils";
 
 //* create new user account to db
 const createNewUser = async (req: Request, res: Response): Promise<void> => {
@@ -30,7 +31,7 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { userName, userPass } = req.body;
 
-    //* check if user is logging in with userName or email : method 1
+    //* check if user is logging in with userName or email : "method 1"
     // const checkIfEmailOrNameLog = () => {
     //   const checkLog = userName.includes("@")
     //     ? { email: userName }
@@ -40,7 +41,7 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
 
     // const user = await USER_MODEL.findOne(checkIfEmailOrNameLog());
 
-    //* check if user is logging in with userName or email : method 2
+    //* check if user is logging in with userName or email : "method 2"
     const user = await USER_MODEL.findOne({
       $or: [{ email: userName }, { userName }],
     });
@@ -74,4 +75,72 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { createNewUser, loginUser };
+//* check if user is active based on connection with the frontend
+const checkIfUserIsActive = async (userID: string, status: string) => {
+  try {
+    const user = await findUserByID(userID);
+
+    if (!user) {
+      console.error("Error on updating user status, User cannot be found!");
+      return;
+    }
+
+    // check if user status is not away
+    if (user.status !== "away") {
+      user.status = status;
+      await user.save();
+    }
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred";
+    console.error("error on login user", errorMessage);
+  }
+};
+
+//* update user profile
+const updateUserProfile = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { _id, updatedData, password } = req.body;
+
+    const user = await findUserByID(_id);
+
+    if (password === undefined) {
+      res.status(500).json({ error: "password must be provided" });
+      return;
+    }
+
+    if (!user) {
+      res.status(500).json({ error: "user has not been found!" });
+      return;
+    }
+
+    //* Compare the provided password with the stored hashed password
+    const checkIfPassValid = await bcrypt.compare(password, user.userPass);
+
+    if (!checkIfPassValid) {
+      res.status(403).json({ err: "password incorrect" });
+      return;
+    }
+
+    //* hash the new provided password
+    const updateAndHashPass = await bcrypt.hash(updatedData.userPass, 10);
+
+    user.userName = updatedData.userName || user.userName;
+    user.email = updatedData.email || user.email;
+    user.userPass = updateAndHashPass || user.userPass;
+
+    const response = await user.save();
+
+    res.status(200).json({ user: response });
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred";
+    console.error("error ", errorMessage);
+    res.status(500).json({ error: errorMessage });
+  }
+};
+
+export { createNewUser, loginUser, checkIfUserIsActive, updateUserProfile };
