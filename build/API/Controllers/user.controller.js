@@ -105,6 +105,10 @@ const updateUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, functi
             res.status(500).json({ error: "password must be provided" });
             return;
         }
+        if (updatedData === undefined) {
+            res.status(500).json({ error: "updatedData is missing" });
+            return;
+        }
         if (!user) {
             res.status(500).json({ error: "user has not been found!" });
             return;
@@ -116,7 +120,7 @@ const updateUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, functi
             return;
         }
         //* hash the new provided password
-        const updateAndHashPass = yield bcryptjs_1.default.hash(updatedData.userPass, 10);
+        const updateAndHashPass = yield bcryptjs_1.default.hash(updatedData.userPass || user.userPass, 10);
         user.userName = updatedData.userName || user.userName;
         user.email = updatedData.email || user.email;
         user.userPass = updateAndHashPass || user.userPass;

@@ -112,6 +112,11 @@ const updateUserProfile = async (
       return;
     }
 
+    if (updatedData === undefined) {
+      res.status(500).json({ error: "updatedData is missing" });
+      return;
+    }
+
     if (!user) {
       res.status(500).json({ error: "user has not been found!" });
       return;
@@ -126,7 +131,7 @@ const updateUserProfile = async (
     }
 
     //* hash the new provided password
-    const updateAndHashPass = await bcrypt.hash(updatedData.userPass, 10);
+    const updateAndHashPass = await bcrypt.hash(updatedData.userPass || user.userPass, 10);
 
     user.userName = updatedData.userName || user.userName;
     user.email = updatedData.email || user.email;
