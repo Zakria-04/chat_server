@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import Routes from "./API/Routes/Routes";
 import cors from "cors";
+
+import "./res/cloudinary";
+import axios from "axios";
 dotenv.config();
 
 const app = express();
@@ -32,5 +35,30 @@ mongoose.connection.on("error", () => {
 app.get("/live", (req, res) => {
   res.status(200).json({ status: "server is live!" });
 });
+
+// const cloud_name = process.env.CLOUDINARY_CLOUD_NAME;
+// const api_key = process.env.CLOUDINARY_API_KEY;
+// const api_secret = process.env.CLOUDINARY_API_SECRET;
+
+// const fetchImages = async () => {
+//   const url = `https://api.cloudinary.com/v1_1/${cloud_name}/resources/image`;
+
+//   try {
+//     const response = await axios.get(url, {
+//       auth: {
+//         username: api_key as string,
+//         password: api_secret as string,
+//       },
+//     });
+
+//     const images = response.data.resources;
+//     console.log("url: ", images[0].url);
+//     return images; // Array of image objects
+//   } catch (error) {
+//     console.error("Error fetching images:", error);
+//   }
+// };
+
+// fetchImages();
 
 export default app;

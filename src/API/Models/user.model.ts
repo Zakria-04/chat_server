@@ -16,7 +16,11 @@ const user_schema = new Schema({
   },
   status: {
     type: String,
-    default: 'offline',
+    default: "offline",
+  },
+  profileImg: {
+    type: String,
+    default: "https://res.cloudinary.com/dvvm7u4dh/image/upload/v1732177776/wizard_4472179_fvv4gr.png",
   },
 });
 

@@ -6,4 +6,5 @@ const userRouter = (0, express_1.Router)();
 userRouter.post("/create_new_user", user_controller_1.createNewUser);
 userRouter.post("/login_user", user_controller_1.loginUser);
 userRouter.patch("/update_profile", user_controller_1.updateUserProfile);
+userRouter.patch("/update_profile_img", user_controller_1.updateUserProfileImg);
 exports.default = userRouter;

@@ -45,18 +45,32 @@ const port = process.env.PORT || 8080;
 const server = http_1.default.createServer(index_1.default);
 const io = new socket_io_1.Server(server, {
     cors: {
+        // origin: "*",
         // origin: "http://localhost:3000",
         origin: "https://chat-app-sigma-ashen.vercel.app",
+        methods: ["GET", "POST"],
     },
 });
 io.on("connection", (socket) => {
-    // received user _id from frontend
+    console.log(socket.connected);
+    // check if user is active
     socket.on("active", (id) => __awaiter(void 0, void 0, void 0, function* () {
         // created a new key with the value of _id
+        console.log("socket id", id);
         socket.userId = id;
         try {
             // change user status based on connection
             yield (0, user_controller_1.checkIfUserIsActive)(id, "online");
+        }
+        catch (error) {
+            console.error("Error updating active status:", error);
+        }
+    }));
+    // update user status
+    socket.on("status-change", (id, status) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log("status change", status);
+        try {
+            yield (0, user_controller_1.updateUserStatus)(id, status);
         }
         catch (error) {
             console.error("Error updating active status:", error);

@@ -77,6 +77,8 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
 
 //* check if user is active based on connection with the frontend
 const checkIfUserIsActive = async (userID: string, status: string) => {
+  console.log("status is ", status);
+
   try {
     const user = await findUserByID(userID);
 
@@ -131,7 +133,10 @@ const updateUserProfile = async (
     }
 
     //* hash the new provided password
-    const updateAndHashPass = await bcrypt.hash(updatedData.userPass || user.userPass, 10);
+    const updateAndHashPass = await bcrypt.hash(
+      updatedData.userPass || user.userPass,
+      10
+    );
 
     user.userName = updatedData.userName || user.userName;
     user.email = updatedData.email || user.email;
@@ -148,4 +153,51 @@ const updateUserProfile = async (
   }
 };
 
-export { createNewUser, loginUser, checkIfUserIsActive, updateUserProfile };
+//* check if USER_MODEL is connected
+const updateUserStatus = async (userID: string, status: string) => {
+  try {
+    const user = await findUserByID(userID);
+
+    if (!user) {
+      console.error("Error on updating user status, User cannot be found!");
+      return;
+    }
+
+    user.status = status;
+    await user.save();
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred";
+    console.error("error on update user status", errorMessage);
+  }
+};
+
+const updateUserProfileImg = async (req: Request, res: Response) => {
+  try {
+    const { _id, profileImg } = req.body;
+    const user = await findUserByID(_id);
+
+    if (!user) {
+      res.status(403).json({ err: "user is not found!" });
+      return;
+    }
+
+    user.profileImg = profileImg || user.profileImg;
+    const response = await user.save();
+
+    res.status(200).json({ response });
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred";
+    console.error("error on update user profile", errorMessage);
+  }
+};
+
+export {
+  createNewUser,
+  loginUser,
+  checkIfUserIsActive,
+  updateUserProfile,
+  updateUserStatus,
+  updateUserProfileImg,
+};

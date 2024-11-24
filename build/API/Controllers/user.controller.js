@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUserProfile = exports.checkIfUserIsActive = exports.loginUser = exports.createNewUser = void 0;
+exports.updateUserProfileImg = exports.updateUserStatus = exports.updateUserProfile = exports.checkIfUserIsActive = exports.loginUser = exports.createNewUser = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const user_model_1 = __importDefault(require("../Models/user.model"));
 const utils_1 = __importDefault(require("../../res/utils"));
@@ -78,6 +78,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.loginUser = loginUser;
 //* check if user is active based on connection with the frontend
 const checkIfUserIsActive = (userID, status) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("status is ", status);
     try {
         const user = yield (0, utils_1.default)(userID);
         if (!user) {
@@ -134,3 +135,38 @@ const updateUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.updateUserProfile = updateUserProfile;
+//* check if USER_MODEL is connected
+const updateUserStatus = (userID, status) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield (0, utils_1.default)(userID);
+        if (!user) {
+            console.error("Error on updating user status, User cannot be found!");
+            return;
+        }
+        user.status = status;
+        yield user.save();
+    }
+    catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+        console.error("error on update user status", errorMessage);
+    }
+});
+exports.updateUserStatus = updateUserStatus;
+const updateUserProfileImg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { _id, profileImg } = req.body;
+        const user = yield (0, utils_1.default)(_id);
+        if (!user) {
+            res.status(403).json({ err: "user is not found!" });
+            return;
+        }
+        user.profileImg = profileImg || user.profileImg;
+        const response = yield user.save();
+        res.status(200).json({ response });
+    }
+    catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+        console.error("error on update user profile", errorMessage);
+    }
+});
+exports.updateUserProfileImg = updateUserProfileImg;
