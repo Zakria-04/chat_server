@@ -54,7 +54,6 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             $or: [{ email: userName }, { userName }],
         });
         if (!user) {
-            console.log(userName);
             res.status(401).json({ error: "UserName or Password are incorrect!" });
             return;
         }
@@ -80,7 +79,7 @@ exports.loginUser = loginUser;
 const checkIfUserIsActive = (userID, status) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("status is ", status);
     try {
-        const user = yield (0, utils_1.default)(userID);
+        const user = (yield (0, utils_1.default)(userID));
         if (!user) {
             console.error("Error on updating user status, User cannot be found!");
             return;
@@ -101,7 +100,7 @@ exports.checkIfUserIsActive = checkIfUserIsActive;
 const updateUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { _id, updatedData, password } = req.body;
-        const user = yield (0, utils_1.default)(_id);
+        const user = (yield (0, utils_1.default)(_id));
         if (password === undefined) {
             res.status(500).json({ error: "password must be provided" });
             return;
@@ -138,7 +137,7 @@ exports.updateUserProfile = updateUserProfile;
 //* check if USER_MODEL is connected
 const updateUserStatus = (userID, status) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield (0, utils_1.default)(userID);
+        const user = (yield (0, utils_1.default)(userID));
         if (!user) {
             console.error("Error on updating user status, User cannot be found!");
             return;
@@ -155,7 +154,7 @@ exports.updateUserStatus = updateUserStatus;
 const updateUserProfileImg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { _id, profileImg } = req.body;
-        const user = yield (0, utils_1.default)(_id);
+        const user = (yield (0, utils_1.default)(_id));
         if (!user) {
             res.status(403).json({ err: "user is not found!" });
             return;

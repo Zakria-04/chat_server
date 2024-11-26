@@ -47,8 +47,6 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
     });
 
     if (!user) {
-      console.log(userName);
-
       res.status(401).json({ error: "UserName or Password are incorrect!" });
       return;
     }
@@ -80,7 +78,7 @@ const checkIfUserIsActive = async (userID: string, status: string) => {
   console.log("status is ", status);
 
   try {
-    const user = await findUserByID(userID);
+    const user = (await findUserByID(userID)) as any;
 
     if (!user) {
       console.error("Error on updating user status, User cannot be found!");
@@ -107,7 +105,7 @@ const updateUserProfile = async (
   try {
     const { _id, updatedData, password } = req.body;
 
-    const user = await findUserByID(_id);
+    const user = (await findUserByID(_id)) as any;
 
     if (password === undefined) {
       res.status(500).json({ error: "password must be provided" });
@@ -156,7 +154,7 @@ const updateUserProfile = async (
 //* check if USER_MODEL is connected
 const updateUserStatus = async (userID: string, status: string) => {
   try {
-    const user = await findUserByID(userID);
+    const user = (await findUserByID(userID)) as any;
 
     if (!user) {
       console.error("Error on updating user status, User cannot be found!");
@@ -175,7 +173,7 @@ const updateUserStatus = async (userID: string, status: string) => {
 const updateUserProfileImg = async (req: Request, res: Response) => {
   try {
     const { _id, profileImg } = req.body;
-    const user = await findUserByID(_id);
+    const user = (await findUserByID(_id)) as any;
 
     if (!user) {
       res.status(403).json({ err: "user is not found!" });

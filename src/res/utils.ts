@@ -4,9 +4,11 @@ const findUserByID = async (id: string) => {
   try {
     const user = await USER_MODEL.findById(id);
     return user;
-  } catch (error) {
-    console.error("user was no found", error);
-    return null;
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred";
+    console.error("user was no found", errorMessage);
+    return errorMessage || null;
   }
 };
 

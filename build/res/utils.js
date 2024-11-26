@@ -19,8 +19,9 @@ const findUserByID = (id) => __awaiter(void 0, void 0, void 0, function* () {
         return user;
     }
     catch (error) {
-        console.error("user was no found", error);
-        return null;
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+        console.error("user was no found", errorMessage);
+        return errorMessage || null;
     }
 });
 exports.default = findUserByID;
