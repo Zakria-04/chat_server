@@ -46,6 +46,7 @@ const server = http_1.default.createServer(index_1.default);
 const io = new socket_io_1.Server(server, {
     cors: {
         origin: [
+            "*",
             "https://chat-3pkb0k0pa-zakria-04s-projects.vercel.app",
             "http://localhost:3000",
         ],

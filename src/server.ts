@@ -21,6 +21,7 @@ const server = http.createServer(app);
 const io = new SocketIOServer(server, {
   cors: {
     origin: [
+      "*",
       "https://chat-3pkb0k0pa-zakria-04s-projects.vercel.app",
       "http://localhost:3000",
     ],
