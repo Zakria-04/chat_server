@@ -98,6 +98,12 @@ const findParticipants = async (userID: string, socket: any) => {
       getUserChat.chatProfile = getUserBasedOnID?.profileImg;
       getUserChat.chatName = getUserBasedOnID?.userName;
       userChat.push(getUserChat);
+    } else {
+      getUserChat.chatProfile =
+        "https://res.cloudinary.com/dvvm7u4dh/image/upload/v1733690400/profile-avatars/cqh8vqkmyxskojy2s95h.png";
+      getUserChat.chatName = "group chat";
+      userChat.push(getUserChat);
+      await getUserChat.save();
     }
   }
 

@@ -7,6 +7,7 @@ import {
   updateUserStatus,
 } from "./API/Controllers/user.controller";
 import { findParticipants } from "./API/Controllers/chat.controller";
+import { getUserMessages } from "./API/Controllers/message.controller";
 dotenv.config();
 
 // declaring new key
@@ -63,6 +64,14 @@ io.on("connection", (socket) => {
     console.log("server data", data);
     try {
       await findParticipants(data, socket);
+    } catch (error) {
+      console.error("ُError", error);
+    }
+  });
+
+  socket.on("get_user_messages", async (chatID, userID) => {
+    try {
+      await getUserMessages(chatID, userID, socket);
     } catch (error) {
       console.error("ُError", error);
     }
