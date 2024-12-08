@@ -6,6 +6,7 @@ import {
   checkIfUserIsActive,
   updateUserStatus,
 } from "./API/Controllers/user.controller";
+import { findParticipants } from "./API/Controllers/chat.controller";
 dotenv.config();
 
 // declaring new key
@@ -20,7 +21,8 @@ const server = http.createServer(app);
 
 const io = new SocketIOServer(server, {
   cors: {
-    origin: "https://chat-app-sigma-ashen.vercel.app",
+    // origin: "https://chat-app-sigma-ashen.vercel.app",
+    origin: "http://localhost:3000",
     // origin: [
     //   "*",
     //   "https://chat-3pkb0k0pa-zakria-04s-projects.vercel.app",
@@ -31,12 +33,11 @@ const io = new SocketIOServer(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.connected);
+  // console.log("connected? ", socket.connected);
 
   // check if user is active
   socket.on("active", async (id) => {
     // created a new key with the value of _id
-    console.log("socket id", id);
 
     socket.userId = id;
     try {
@@ -55,6 +56,15 @@ io.on("connection", (socket) => {
       await updateUserStatus(id, status);
     } catch (error) {
       console.error("Error updating active status:", error);
+    }
+  });
+
+  socket.on("get_user_chat", async (data) => {
+    console.log("server data", data);
+    try {
+      await findParticipants(data, socket);
+    } catch (error) {
+      console.error("ُError", error);
     }
   });
 

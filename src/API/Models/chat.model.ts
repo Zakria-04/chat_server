@@ -11,6 +11,12 @@ const chatSchema = new Schema({
     required: true,
     default: [],
   },
+  chatProfile: {
+    type: String,
+  },
+  chatName: {
+    type: String,
+  }
 });
 
 const CHAT_MODEL = model("user-chat", chatSchema);

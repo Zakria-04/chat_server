@@ -75,7 +75,6 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
 
 //* check if user is active based on connection with the frontend
 const checkIfUserIsActive = async (userID: string, status: string) => {
-  console.log("status is ", status);
 
   try {
     const user = (await findUserByID(userID)) as any;
